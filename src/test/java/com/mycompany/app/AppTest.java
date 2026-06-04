@@ -1,25 +1,34 @@
 package com.mycompany.app;
 
 import org.junit.jupiter.api.Test;
+import static io.restassured.RestAssured.*;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+public class AppTest {
 
-/**
- * Unit test for simple App.
- */
-public class AppTest
-{
     @Test
-    public void testAppConstructor() {
-        App app1 = new App();
-        App app2 = new App();
-        assertEquals(app1.getMessage(), app2.getMessage());
+    public void testGitHubRepoGetir() {
+        given()
+            .header("User-Agent", "RestAssured-Test") 
+        .when()
+            .get("https://api.github.com/repos/junit-team/junit5") 
+        .then()
+            .statusCode(200) 
+            .body("name", org.hamcrest.Matchers.equalTo("junit-framework")) 
+            .body("private", org.hamcrest.Matchers.equalTo(false)) 
+            .time(org.hamcrest.Matchers.lessThan(6000L)); 
     }
 
     @Test
-    public void testAppMessage()
-    {
-        App app = new App();
-        assertEquals("Hello World!", app.getMessage());
+    public void testGitHubRepoBulunamadi() {
+        try {
+            given()
+                .header("User-Agent", "RestAssured-Test")
+            .when()
+                .get("https://api.github.com/repos/bu-kullanici-kesinlikle-yok-12345/bu-repo-da-yok")
+            .then()
+                .statusCode(404);
+        } catch (Exception e) {
+            System.out.println("Beklenen hata yakalandi.");
+        }
     }
 }

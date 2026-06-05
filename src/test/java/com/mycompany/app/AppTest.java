@@ -31,4 +31,29 @@ public class AppTest {
             System.out.println("Beklenen hata yakalandi.");
         }
     }
+@Test
+    public void testKullaniciOlusturPOST() {
+        // 1. Request Body (JSON Gövdesi) Hazırlama
+        String jsonBody = "{\n" +
+                          "    \"title\": \"Yazilim Test Projesi\",\n" +
+                          "    \"body\": \"Yapay Zeka Destekli Test\",\n" +
+                          "    \"userId\": 1\n" +
+                          "}";
+
+        System.out.println("POST İsteği için hazırlanan Request Body:\n" + jsonBody);
+
+        // 2. Rest-Assured ile POST İsteği Atılması ve Doğrulanması
+        given()
+            .header("Content-Type", "application/json; charset=UTF-8")
+            .body(jsonBody) // Hocanın istediği Request Body
+        .when()
+            .post("https://jsonplaceholder.typicode.com/posts") // Herkese açık güvenli test API'si
+        .then()
+            .statusCode(201) // HTTP 201 Created (Başarıyla Oluşturuldu) doğrulaması
+            .body("title", org.hamcrest.Matchers.equalTo("Yazilim Test Projesi"))
+            .body("body", org.hamcrest.Matchers.equalTo("Yapay Zeka Destekli Test"))
+            .body("$", org.hamcrest.Matchers.hasKey("id")); // Sunucunun otomatik id ürettiğini doğrulama
+
+        System.out.println("POST İsteği başarıyla tamamlandı. Yeni veri oluşturuldu ve HTTP 201 alındı!");
+    }
 }
